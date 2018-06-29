@@ -160,7 +160,7 @@ function RemoveAllBadData(feed)
     if (feed[generalSchema[i]] === "")
     {
       console.log(generalSchema[i] + " -> remove");
-      delete feed.generalSchema[i];
+      delete feed[generalSchema[i]];
     }
   }
 
