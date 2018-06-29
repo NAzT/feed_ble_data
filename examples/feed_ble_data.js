@@ -197,7 +197,7 @@ function Start ()
           delete f.thingy;
           f = RemoveAllBadData(f);
 
-          mqttClient1.publish(topic, JSON.stringify(f), {retain: false})
+          mqttClient1.publish("ble", JSON.stringify(f), {retain: false})
 
         }
 
