@@ -201,8 +201,10 @@ function Start ()
 
         }
 
-        ResetAllFeedData();
-        Start();
+        // ResetAllFeedData();
+        // Start();
+        process.exit()
+
       });
     }
 
