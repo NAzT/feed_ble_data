@@ -189,7 +189,7 @@ function Start ()
 
         console.log(allFeedData)
 
-        for (int i = 0; i < allFeedData.length; i++)
+        for (var i = 0; i < allFeedData.length; i++)
         {
           var f = allFeedData[i];
 

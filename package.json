@@ -7,6 +7,7 @@
     "example": "examples"
   },
   "dependencies": {
+    "cmmc-mqtt": "^0.1.6",
     "noble-device": "^1.4.1"
   },
   "devDependencies": {},
