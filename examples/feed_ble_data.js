@@ -382,7 +382,22 @@ function onDiscover(thingy) {
   console.log('Discovered: ' + thingy);
 
   var feedData = NewFeedData(thingy);
-  allFeedData.push(feedData);
+  var isAdd = false;
+
+  for (var i = 0; i < allFeedData.length; i++)
+  {
+    if (allFeedData[i].thingy.uuid == thingy.uuid) 
+    {
+      isAdd = true;
+    }
+
+  }
+  
+  if (isAdd == false)
+  {
+    allFeedData.push(feedData);
+  }
+
 }
 
 // https://tc39.github.io/ecma262/#sec-array.prototype.includes
