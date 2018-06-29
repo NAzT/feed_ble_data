@@ -31,6 +31,12 @@
  
 var Thingy = require('../index');
 
+const mqtt = require('cmmc-mqtt').mqtt
+const mqttClient1 = mqtt.create('mqtt://cmmc:cmmc@odin.cmmc.io', []).register('on_connected', function () {
+  console.log('mqtt connected.')
+  Start();
+})
+
 var isLoadingFeed = false;
 var timeoutForReadData = 60000;
 var timeForDiscovery = 8000;
@@ -124,6 +130,43 @@ function IsGetAllDataFinish(feed)
   return allFiledData;
 }
 
+function RemoveAllBadData(feed)
+{
+
+  for (var i = 0; i < colorSchema.length; i++)
+  {
+    if (feed.color[colorSchema[i]] === "")
+    {
+      console.log(colorSchema[i] + " -> remove");
+      delete feed.color;
+      break;
+    }
+    
+  }
+
+  for (var i = 0; i < gasSchema.length; i++)
+  {
+    if (feed.gas[gasSchema[i]] === "")
+    {
+      console.log(gasSchema[i] + " -> remove");
+      delete feed.gas;
+      break;
+    }
+
+  }
+
+  for (var i = 0; i < generalSchema.length; i++)
+  {
+    if (feed[generalSchema[i]] === "")
+    {
+      console.log(generalSchema[i] + " -> remove");
+      delete feed.generalSchema[i];
+    }
+  }
+
+  return feed;
+}
+
 function Start ()
 {
   console.log('Start Thingy discover all node');
@@ -145,6 +188,18 @@ function Start ()
         console.log('finish callback')
 
         console.log(allFeedData)
+
+        for (int i = 0; i < allFeedData.length; i++)
+        {
+          var f = allFeedData[i];
+
+          f.uuid = f.thingy.uuid;
+          delete f.thingy;
+          f = RemoveAllBadData(f);
+
+          mqttClient1.publish(topic, JSON.stringify(f), {retain: false})
+
+        }
 
         ResetAllFeedData();
         Start();
@@ -326,69 +381,6 @@ function onDiscover(thingy) {
 
   var feedData = NewFeedData(thingy);
   allFeedData.push(feedData);
-
-  // console.log(allFeedData);
-
-  // thingy.on('disconnect', function() {
-  //   console.log('Disconnected!');
-  // });
-
-  // thingy.connectAndSetUp(function(error) {
-  //   console.log('Connected! ' + error ? error : '');
-
-    // thingy.on('temperatureNotif', onTemperatureData);
-    // thingy.on('pressureNotif', onPressureData);
-    // thingy.on('humidityNotif', onHumidityData);
-    // thingy.on('gasNotif', onGasData);
-    // thingy.on('colorNotif', onColorData);
-
-    // thingy.temperature_interval_set(1000, function(error) {
-    //     if (error) {
-    //         console.log('Temperature sensor configure! ' + error);
-    //     }
-    // });
-    // thingy.pressure_interval_set(1000, function(error) {
-    //     if (error) {
-    //         console.log('Pressure sensor configure! ' + error);
-    //     }
-    // });
-    // thingy.humidity_interval_set(1000, function(error) {
-    //     if (error) {
-    //         console.log('Humidity sensor configure! ' + error);
-    //     }
-    // });
-    // thingy.color_interval_set(1000, function(error) {
-    //     if (error) {
-    //         console.log('Color sensor configure! ' + error);
-    //     }
-    // });
-    // thingy.gas_mode_set(1, function(error) {
-    //     if (error) {
-    //         console.log('Gas sensor configure! ' + error);
-    //     }
-    // });
-
-    // enabled = true;
-
-    // thingy.temperature_enable(function(error) {
-    //     console.log('Temperature sensor started! ' + ((error) ? error : ''));
-    // });
-    // thingy.pressure_enable(function(error) {
-    //     console.log('Pressure sensor started! ' + ((error) ? error : ''));
-    // });
-    // thingy.humidity_enable(function(error) {
-    //     console.log('Humidity sensor started! ' + ((error) ? error : ''));
-    // });
-    // thingy.color_enable(function(error) {
-    //     console.log('Color sensor started! ' + ((error) ? error : ''));
-    // });
-    // thingy.gas_enable(function(error) {
-    //     console.log('Gas sensor started! ' + ((error) ? error : ''));
-    // });
-    // thingy.button_enable(function(error) {
-    //     console.log('Button started! ' + ((error) ? error : ''));
-    // });
-  // });
 }
 
 // https://tc39.github.io/ecma262/#sec-array.prototype.includes
@@ -442,6 +434,3 @@ if (!Array.prototype.includes) {
     }
   });
 }
-
-
-Start();
