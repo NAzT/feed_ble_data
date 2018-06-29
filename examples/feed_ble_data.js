@@ -38,7 +38,7 @@ const mqttClient1 = mqtt.create('mqtt://cmmc:cmmc@odin.cmmc.io', []).register('o
 })
 
 var isLoadingFeed = false;
-var timeoutForReadData = 60000;
+var timeoutForReadData = 10000;
 var timeForDiscovery = 8000;
 
 var loadTimeout;
