@@ -197,13 +197,18 @@ function Start ()
           delete f.thingy;
           f = RemoveAllBadData(f);
 
+          console.log('send data')
           mqttClient1.publish("ble", JSON.stringify(f), {retain: false})
 
         }
 
-        // ResetAllFeedData();
-        // Start();
-        process.exit()
+        setTimeout(function () {
+          // ResetAllFeedData();
+          // Start();
+          console.log('End procress')
+          process.exit()
+        }, 100000);
+
 
       });
     }
