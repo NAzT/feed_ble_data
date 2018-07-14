@@ -1,34 +1,3 @@
-/*
-  Copyright (c) 2010 - 2017, Nordic Semiconductor ASA
-  All rights reserved.
-  Redistribution and use in source and binary forms, with or without modification,
-  are permitted provided that the following conditions are met:
-  1. Redistributions of source code must retain the above copyright notice, this
-     list of conditions and the following disclaimer.
-  2. Redistributions in binary form, except as embedded into a Nordic
-     Semiconductor ASA integrated circuit in a product or a software update for
-     such product, must reproduce the above copyright notice, this list of
-     conditions and the following disclaimer in the documentation and/or other
-     materials provided with the distribution.
-  3. Neither the name of Nordic Semiconductor ASA nor the names of its
-     contributors may be used to endorse or promote products derived from this
-     software without specific prior written permission.
-  4. This software, with or without modification, must only be used with a
-     Nordic Semiconductor ASA integrated circuit.
-  5. Any software provided in binary form under this license must not be reverse
-     engineered, decompiled, modified and/or disassembled.
-  THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
-  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-  OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
-  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
- 
 var Thingy = require('../index');
 
 const mqtt = require('cmmc-mqtt').mqtt
@@ -38,8 +7,8 @@ const mqttClient1 = mqtt.create('mqtt://cmmc:cmmc@odin.cmmc.io', []).register('o
 })
 
 var isLoadingFeed = false;
-var timeoutForReadData = 10000;
-var timeForDiscovery = 8000;
+var timeoutForReadData = 10*1000;
+var timeForDiscovery = 8*1000;
 
 var loadTimeout;
 var currentFeedIndex = 0;
@@ -47,24 +16,23 @@ var currentFeedIndex = 0;
 var allFeedData = [];
 
 var colorSchema = ["red", "blue", "green", "clear"];
-var gasSchema = ["eco2", "tvoc"];
+//var gasSchema = ["eco2", "tvoc"];
 var generalSchema = ["temperature", "pressure", "humidity", "battery"];
 
 function ResetAllFeedData() {
   allFeedData = [];
 }
 
-function AddDataType(feed, type, data)
-{
+function AddDataType(feed, type, data) {
   // Use only know data
   if (colorSchema.includes(type))
   {
     feed.color[type] = data;
   }
-  else if (gasSchema.includes(type))
-  {
-    feed.gas[type] = data;
-  }
+//  else if (gasSchema.includes(type))
+//  {
+//    feed.gas[type] = data;
+//  }
   else if (generalSchema.includes(type))
   {
     feed[type] = data;
@@ -88,9 +56,9 @@ function NewFeedData(thingy)
   feedData.pressure = "";
   feedData.humidity = "";
 
-  feedData.gas = {};
-  feedData.gas.eco2 = "";
-  feedData.gas.tvoc = "";
+  //feedData.gas = {};
+  //feedData.gas.eco2 = "";
+  //feedData.gas.tvoc = "";
 
   return feedData;
 }
@@ -109,14 +77,14 @@ function IsGetAllDataFinish(feed)
     
   }
 
-  for (var i = 0; i < gasSchema.length; i++)
-  {
-    if (feed.gas[gasSchema[i]] === "")
-    {
-      console.log(gasSchema[i] + " is empty " + feed.gas[gasSchema[i]]);
-      allFiledData = false;
-    }
-  }
+  //for (var i = 0; i < gasSchema.length; i++)
+  //{
+  //  if (feed.gas[gasSchema[i]] === "")
+  //  {
+  //    console.log(gasSchema[i] + " is empty " + feed.gas[gasSchema[i]]);
+  //    allFiledData = false;
+  //  }
+  //}
 
   for (var i = 0; i < generalSchema.length; i++)
   {
@@ -144,16 +112,16 @@ function RemoveAllBadData(feed)
     
   }
 
-  for (var i = 0; i < gasSchema.length; i++)
-  {
-    if (feed.gas[gasSchema[i]] === "")
-    {
-      console.log(gasSchema[i] + " -> remove");
-      delete feed.gas;
-      break;
-    }
-
-  }
+//  for (var i = 0; i < gasSchema.length; i++)
+//  {
+//    if (feed.gas[gasSchema[i]] === "")
+//    {
+//      console.log(gasSchema[i] + " -> remove");
+//      delete feed.gas;
+//      break;
+//    }
+//
+//  }
 
   for (var i = 0; i < generalSchema.length; i++)
   {
@@ -169,8 +137,7 @@ function RemoveAllBadData(feed)
 
 function Start ()
 {
-  console.log('Start Thingy discover all node');
-
+  console.log('Start Thingy discover all node'); 
   Thingy.discoverAll(onDiscover);
 
   setTimeout(function ()
@@ -191,8 +158,7 @@ function Start ()
 
         for (var i = 0; i < allFeedData.length; i++)
         {
-          var f = allFeedData[i];
-
+          var f = allFeedData[i]; 
           f.uuid = f.thingy.uuid;
           delete f.thingy;
           f = RemoveAllBadData(f);
@@ -207,7 +173,7 @@ function Start ()
           // Start();
           console.log('End procress')
           process.exit()
-        }, 100000);
+        }, 20*1000);
 
 
       });
@@ -235,15 +201,15 @@ function Start ()
 
 function ConnectThingy(feed, callback)
 {
-  var thingy = feed.thingy;
-
+  var thingy = feed.thingy; 
+  console.log('connect thingy');
   thingy.connectAndSetup(function (error) 
   {
     console.log('thingy connect');
     thingy.on('temperatureNotif', onTemperatureData);
     thingy.on('pressureNotif', onPressureData);
     thingy.on('humidityNotif', onHumidityData);
-    thingy.on('gasNotif', onGasData);
+    //thingy.on('gasNotif', onGasData);
     thingy.on('colorNotif', onColorData);
     thingy.on('batteryLevelChange', onBatteryLevelChange);
 
@@ -267,11 +233,12 @@ function ConnectThingy(feed, callback)
             console.log('Color sensor configure! ' + error);
         }
     });
-    thingy.gas_mode_set(1, function(error) {
-        if (error) {
-            console.log('Gas sensor configure! ' + error);
-        }
-    });
+
+    //thingy.gas_mode_set(1, function(error) {
+    //    if (error) {
+    //        console.log('Gas sensor configure! ' + error);
+    //    }
+    //});
 
     enabled = true;
 
@@ -287,9 +254,9 @@ function ConnectThingy(feed, callback)
     thingy.color_enable(function(error) {
         console.log('Color sensor started! ' + ((error) ? error : ''));
     });
-    thingy.gas_enable(function(error) {
-        console.log('Gas sensor started! ' + ((error) ? error : ''));
-    });
+    //thingy.gas_enable(function(error) {
+    //    console.log('Gas sensor started! ' + ((error) ? error : ''));
+    //});
     thingy.notifyBatteryLevel(function(error) {
       console.log('Battery Level Notifications enabled! ' + ((error) ? error : ''));
     });
@@ -359,12 +326,12 @@ function onHumidityData(humidity) {
     AddDataType(allFeedData[currentFeedIndex], "humidity", humidity);
 }
 
-function onGasData(gas) {
-    console.log('Gas sensor: eCO2 ' + gas.eco2 + ' - TVOC ' + gas.tvoc  + " uuid:" + allFeedData[currentFeedIndex].thingy.uuid);
-    AddDataType(allFeedData[currentFeedIndex], "eco2", gas.eco2);
-    AddDataType(allFeedData[currentFeedIndex], "tvoc", gas.tvoc);
-
-}
+//function onGasData(gas) {
+//    console.log('Gas sensor: eCO2 ' + gas.eco2 + ' - TVOC ' + gas.tvoc  + " uuid:" + allFeedData[currentFeedIndex].thingy.uuid);
+//    AddDataType(allFeedData[currentFeedIndex], "eco2", gas.eco2);
+//    AddDataType(allFeedData[currentFeedIndex], "tvoc", gas.tvoc);
+//
+//}
 
 function onColorData(color) {
     console.log('Color sensor: r ' + color.red +
