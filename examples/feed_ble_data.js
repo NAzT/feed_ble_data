@@ -128,51 +128,50 @@ function RemoveAllBadData (feed) {
 function Start () {
   console.log('Start Thingy discover all node')
   Thingy.discoverAll(onDiscover)
+
   setTimeout(function () {
-      // console.log('Try stop discover all');
-      Thingy.stopDiscoverAll(function () {
-        console.log('stopDiscoverAll')
+    console.log('Try stop discover all')
+
+    Thingy.stopDiscoverAll(function () {
+      console.log('stopDiscoverAll')
+    })
+
+    if (allFeedData.length > 0) {
+      var feed = allFeedData[0]
+      // connect thingy
+      ConnectThingy(feed, function () {
+        console.log('finish callback')
+        for (var i = 0; i < allFeedData.length; i++) {
+          var f = allFeedData[i]
+          f.uuid = f.thingy.uuid
+          delete f.thingy
+          f = RemoveAllBadData(f)
+          console.log('send data')
+          mqttClient1.publish('ble', JSON.stringify(f), {retain: false})
+
+        }
+        console.log(allFeedData)
+        setTimeout(function () {
+          // ResetAllFeedData();
+          // Start();
+          console.log('End procress')
+          process.exit()
+        }, 5 * 1000)
       })
+    }
+    // for (var i = 0; i < allFeedData.length; i++)
+    // {
+    //   currentFeedIndex = i;
+    //   isLoadingFeed = true;
 
-      if (allFeedData.length > 0) {
-        var feed = allFeedData[0]
-        ConnectThingy(feed, function () {
-          console.log('finish callback')
-          for (var i = 0; i < allFeedData.length; i++) {
-            var f = allFeedData[i]
-            f.uuid = f.thingy.uuid
-            delete f.thingy
-            f = RemoveAllBadData(f)
+    //   console.log('Try connect ' + thingy.uuid);
 
-            console.log('send data')
-            mqttClient1.publish('ble', JSON.stringify(f), {retain: false})
+    // }
 
-          }
-          console.log(allFeedData)
-          setTimeout(function () {
-            // ResetAllFeedData();
-            // Start();
-            console.log('End procress')
-            process.exit()
-          }, 5 * 1000)
+    // ResetAllFeedData();
+    // console.log('end');
 
-        })
-      }
-
-      // for (var i = 0; i < allFeedData.length; i++)
-      // {
-      //   currentFeedIndex = i;
-      //   isLoadingFeed = true;
-
-      //   console.log('Try connect ' + thingy.uuid);
-
-      // }
-
-      // ResetAllFeedData();
-      // console.log('end');
-
-    },
-    timeForDiscovery)
+  }, timeForDiscovery)
 }
 
 function ConnectThingy (feed, callback) {
@@ -236,9 +235,7 @@ function ConnectThingy (feed, callback) {
     })
 
     loadTimeout = setTimeout(function () {
-
         isLoadingFeed = false
-
         thingy.disconnect()
 
         if (IsGetAllDataFinish(feed)) {
