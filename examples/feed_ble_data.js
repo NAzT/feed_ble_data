@@ -6,7 +6,7 @@ const mqttClient1 = mqtt.create('mqtt://localhost', []).register('on_connected',
   Start()
   setTimeout(() => {
     process.exit()
-  }, 600)
+  }, 600 * 1000)
 })
 
 var isLoadingFeed = false
