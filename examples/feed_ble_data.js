@@ -152,7 +152,7 @@ function Start () {
             // Start();
             console.log('End procress')
             process.exit()
-          }, 20 * 1000)
+          }, 5 * 1000)
 
         })
       }
