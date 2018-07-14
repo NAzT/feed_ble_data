@@ -148,7 +148,7 @@ function Start () {
           delete f.thingy
           f = RemoveAllBadData(f)
           console.log('send data')
-          mqttClient1.publish('ble', JSON.stringify(f), {retain: false})
+          mqttClient1.publish(`CMMC/ble/${f.uuid}`, JSON.stringify(f), {retain: false})
 
         }
         console.log(allFeedData)
