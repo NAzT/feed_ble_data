@@ -112,11 +112,11 @@ process.argv.forEach(function(val, index, array){
     }
 });
 
-if (!maker_key || !maker_evt) {
-    console.log("Please specify IFTTT Maker Service event and key:");
-    console.log("node ifttt_gas.js -e <event> -k <key> (-a <address>)");
-    process.exit(1);
-}
+//if (!maker_key || !maker_evt) {
+//    console.log("Please specify IFTTT Maker Service event and key:");
+//    console.log("node ifttt_gas.js -e <event> -k <key> (-a <address>)");
+//    process.exit(1);
+//}
 
 if (!thingy_id) {
     Thingy.discover(onDiscover);
