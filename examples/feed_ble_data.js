@@ -4,6 +4,9 @@ const mqtt = require('cmmc-mqtt').mqtt
 const mqttClient1 = mqtt.create('mqtt://localhost', []).register('on_connected', function () {
   console.log('mqtt connected.')
   Start()
+  setTimeout(() => {
+    process.exit()
+  }, 600)
 })
 
 var isLoadingFeed = false
@@ -125,7 +128,6 @@ function RemoveAllBadData (feed) {
 function Start () {
   console.log('Start Thingy discover all node')
   Thingy.discoverAll(onDiscover)
-
   setTimeout(function () {
       // console.log('Try stop discover all');
       Thingy.stopDiscoverAll(function () {
@@ -252,7 +254,7 @@ function ConnectThingy (feed, callback) {
 
         currentFeedIndex++
 
-        if (currentFeedIndex == allFeedData.length) {
+        if (currentFeedIndex === allFeedData.length) {
           console.log('Finish Read All')
           if (callback) {
             callback()
