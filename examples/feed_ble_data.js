@@ -246,7 +246,7 @@ function ConnectThingy (feed, callback) {
         }
         else {
           console.log('Failed uuid: ' + thingy.uuid + ' with data')
-          console.log(feed)
+          //console.log(feed)
           // load failed remove this thingy
         }
 
