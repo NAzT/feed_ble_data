@@ -136,9 +136,6 @@ function Start () {
         var feed = allFeedData[0]
         ConnectThingy(feed, function () {
           console.log('finish callback')
-
-          console.log(allFeedData)
-
           for (var i = 0; i < allFeedData.length; i++) {
             var f = allFeedData[i]
             f.uuid = f.thingy.uuid
@@ -149,7 +146,7 @@ function Start () {
             mqttClient1.publish('ble', JSON.stringify(f), {retain: false})
 
           }
-
+          console.log(allFeedData)
           setTimeout(function () {
             // ResetAllFeedData();
             // Start();
