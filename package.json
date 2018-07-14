@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "cmmc-mqtt": "^0.1.6",
+    "noble": "^1.9.1",
     "noble-device": "^1.4.1"
   },
   "devDependencies": {},
