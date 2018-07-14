@@ -131,10 +131,11 @@ function Start () {
 
   setTimeout(function () {
     console.log('Try stop discover all')
-
     Thingy.stopDiscoverAll(function () {
       console.log('stopDiscoverAll')
     })
+
+    console.log(`feedData = ${allFeedData.length}`)
 
     if (allFeedData.length > 0) {
       var feed = allFeedData[0]
